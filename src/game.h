@@ -2,10 +2,12 @@
 #define GAME_H
 
 #include <random>
+#include <vector>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
+#include "Obstacle.h"
 
 class Game {
  public:
@@ -23,6 +25,10 @@ class Game {
   std::mt19937 engine;
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
+  
+  /* If snake gets in touch with these obstacles, then the snake loses its life. */
+  std::vector<Obstacle> _obstacles;
+  void PlaceObstacles();
 
   int score{0};
 

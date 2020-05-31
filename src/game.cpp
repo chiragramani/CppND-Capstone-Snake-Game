@@ -1,4 +1,5 @@
 #include "game.h"
+#include <vector>
 #include <iostream>
 #include "SDL.h"
 
@@ -8,6 +9,8 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_w(0, static_cast<int>(grid_width)),
       random_h(0, static_cast<int>(grid_height)) {
   PlaceFood();
+  /// Placing the obstacles;
+  PlaceObstacles();
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -18,14 +21,14 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, food);
+    /// Placing the static obstacles, snake and food blocks.
+    renderer.Render(snake, food, _obstacles);
 
     frame_end = SDL_GetTicks();
 
@@ -85,3 +88,27 @@ void Game::Update() {
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+
+void Game::PlaceObstacles() {
+  // TODO: Read number of obstacles from a config file.
+  int numberOfObstacles = 10;
+  
+  int x, y;
+  while (true) {
+    /// Return if we meet the size requiremens.
+    if(numberOfObstacles == _obstacles.size()) {
+      return;
+    }
+
+    /// Randomly generate the x and y coordinate.
+    x = random_w(engine);
+    y = random_h(engine);
+
+    // Check that the location is not occupied by a (snake item + food item) before placing
+    // an obstacle.
+    auto foodExistsAtThisCell = food.x == x && food.y == y;
+    if (!snake.SnakeCell(x, y) && !foodExistsAtThisCell) {
+      _obstacles.emplace_back(Obstacle(x, y));
+    }
+  }
+}
