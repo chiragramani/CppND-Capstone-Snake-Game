@@ -44,3 +44,13 @@ void Boosters::deleteBoosterCellAt(const Coordinate &&coordinate)
         }
     }
 }
+
+const std::vector<Coordinate> &Boosters::getCoordinates() const
+{
+    return *_coordinates; // Copy will not be made due to RVO
+}
+
+int Boosters::count() const
+{
+    return _coordinates->size();
+}

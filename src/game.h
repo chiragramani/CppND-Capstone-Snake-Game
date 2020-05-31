@@ -7,10 +7,9 @@
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
-#include "Obstacle.h"
-#include "Booster.h"
 #include <memory>
 #include "Obstacles.h"
+#include "Boosters.h"
 
 class Game
 {
@@ -33,12 +32,10 @@ private:
   /* If snake gets in touch with these obstacles, then the snake loses its life. */
   std::shared_ptr<Obstacles> _obstacles;
   void PlaceObstacles();
-  
-/* If snake gets in touch with these boosters, then snake's speeds increases. */
-  std::vector<Booster> _boosters;
+
+  /* If snake gets in touch with these boosters, then snake's speeds increases. */
+  std::shared_ptr<Boosters> _boosters;
   void PlaceBoosters();
-  bool BoosterCell(int x, int y);
-  void deleteBoosterCellAt(const int &x, const int &y);
 
   int score{0};
   int _numberOfBoosters;

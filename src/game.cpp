@@ -2,7 +2,6 @@
 #include <vector>
 #include <iostream>
 #include "SDL.h"
-#include "Booster.h"
 #include "FileUtils.h"
 #include "Obstacles.h"
 #include "Coordinate.h"
@@ -17,9 +16,10 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
   auto config = FileUtils::getConfigFromFile();
   _numberOfBoosters = config.getNumberOfBoosters();
   _numberOfObstacles = config.getNumberOfObstacles();
-  
+
   /// Initialising shared pointers.
   _obstacles = std::shared_ptr<Obstacles>(new Obstacles());
+  _boosters = std::shared_ptr<Boosters>(new Boosters());
 
   PlaceFood();
   /// Placing the obstacles;
@@ -107,10 +107,11 @@ void Game::Update()
     return;
   }
 
-  if (BoosterCell(new_x, new_y))
+  /// Is the new cell a booster cell.
+  if (_boosters->BoosterCell(Coordinate(new_x, new_y)))
   {
     snake.speed += 0.01;
-    deleteBoosterCellAt(new_x, new_y);
+   _boosters->deleteBoosterCellAt(Coordinate(new_x, new_y));
     return;
   }
 
@@ -153,25 +154,13 @@ void Game::PlaceObstacles()
   }
 }
 
-bool Game::BoosterCell(int x, int y)
-{
-  for (const Booster &booster : _boosters)
-  {
-    if (x == booster.getXCoordinate() && y == booster.getYCoordinate())
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 void Game::PlaceBoosters()
 {
   int x, y;
   while (true)
   {
     /// Return if we meet the size requiremens.
-    if (_numberOfBoosters == _boosters.size())
+    if (_numberOfBoosters == _boosters->count())
     {
       return;
     }
@@ -183,31 +172,11 @@ void Game::PlaceBoosters()
     // Check that the location is not occupied by a (snake + food + obstacle) before placing
     // an obstacle.
     auto foodExistsAtThisCell = food.x == x && food.y == y;
-    auto boosterExistsAtThisCell = BoosterCell(x, y);
+    
+    auto boosterExistsAtThisCell = _boosters->BoosterCell(Coordinate(x,y));
     if (!snake.SnakeCell(x, y) && !foodExistsAtThisCell && !boosterExistsAtThisCell)
     {
-      _boosters.emplace_back(Booster(x, y));
-    }
-  }
-}
-
-void Game::deleteBoosterCellAt(const int &x, const int &y)
-{
-  /// Early exit.
-  if (_boosters.size() == 0)
-  {
-    return;
-  }
-  /// Removing the booster.
-  for (auto it = _boosters.begin(); it != _boosters.end();)
-  {
-    if ((*it).getXCoordinate() == x && (*it).getYCoordinate() == y)
-    {
-      it = _boosters.erase(it);
-    }
-    else
-    {
-      ++it;
+      _boosters->addCoordinate(Coordinate(x,y));
     }
   }
 }

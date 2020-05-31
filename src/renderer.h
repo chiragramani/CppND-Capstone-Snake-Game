@@ -4,10 +4,9 @@
 #include <vector>
 #include "SDL.h"
 #include "snake.h"
-#include "Obstacle.h"
-#include "Booster.h"
 #include <memory>
 #include "Obstacles.h"
+#include "Boosters.h"
 
 class Renderer
 {
@@ -20,7 +19,7 @@ public:
   void Render(Snake const snake,
               SDL_Point const &food,
               const std::shared_ptr<Obstacles> obstacles,
-              const std::vector<Booster> &boosters);
+              const std::shared_ptr<Boosters> boosters);
 
   void UpdateWindowTitle(int score, int fps);
 
@@ -39,7 +38,7 @@ private:
   SDL_Texture *boosterTexture;
 
   void placeObstacles(const std::shared_ptr<Obstacles> obstacles) const;
-  void placeBoosters(const std::vector<Booster> &boosters) const;
+  void placeBoosters(const std::shared_ptr<Boosters> _boosters) const;
 
   const std::size_t screen_width;
   const std::size_t screen_height;

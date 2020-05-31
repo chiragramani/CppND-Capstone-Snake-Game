@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 #include "SDL.h"
-#include "Obstacle.h"
-#include "Booster.h"
+#include "Boosters.h"
+#include "Obstacles.h"
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
@@ -56,7 +56,7 @@ Renderer::~Renderer()
 void Renderer::Render(Snake const snake,
                       SDL_Point const &food,
                       const std::shared_ptr<Obstacles> obstacles,
-                      const std::vector<Booster> &boosters)
+                      const std::shared_ptr<Boosters> boosters)
 {
   SDL_Rect block;
   block.w = screen_width / grid_width;
@@ -126,16 +126,16 @@ void Renderer::placeObstacles(const std::shared_ptr<Obstacles> obstacles) const
   }
 }
 
-void Renderer::placeBoosters(const std::vector<Booster> &boosters) const
+void Renderer::placeBoosters(const std::shared_ptr<Boosters> boosters) const
 {
-  for (const Booster &booster : boosters)
+  for (const Coordinate &coordinate : boosters->getCoordinates())
   {
     // Rect which will be hosting the booster
     SDL_Rect obstacleRect;
     obstacleRect.w = screen_width / grid_width;
     obstacleRect.h = screen_height / grid_height;
-    obstacleRect.x = booster.getXCoordinate() * obstacleRect.w;
-    obstacleRect.y = booster.getYCoordinate() * obstacleRect.h;
+    obstacleRect.x = coordinate.getXCoordinate() * obstacleRect.w;
+    obstacleRect.y = coordinate.getYCoordinate() * obstacleRect.h;
 
     // Render the obstacles
     SDL_RenderCopy(sdl_renderer, boosterTexture, NULL, &obstacleRect);
