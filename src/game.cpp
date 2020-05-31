@@ -3,6 +3,7 @@
 #include <iostream>
 #include "SDL.h"
 #include "Booster.h"
+#include "FileUtils.h"
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -10,6 +11,11 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       random_w(0, static_cast<int>(grid_width)),
       random_h(0, static_cast<int>(grid_height))
 {
+  /// Get Config and update variables.
+  auto config = FileUtils::getConfigFromFile();
+  _numberOfBoosters = config.getNumberOfBoosters();
+  _numberOfObstacles = config.getNumberOfObstacles();
+
   PlaceFood();
   /// Placing the obstacles;
   PlaceObstacles();
@@ -92,12 +98,14 @@ void Game::Update()
   if (ObstacleCell(new_x, new_y))
   {
     snake.alive = false;
+    return;
   }
 
   if (BoosterCell(new_x, new_y))
   {
     snake.speed += 0.01;
     deleteBoosterCellAt(new_x, new_y);
+    return;
   }
 
   // Check if there's food over here
@@ -116,14 +124,11 @@ int Game::GetSize() const { return snake.size; }
 
 void Game::PlaceObstacles()
 {
-  // TODO: Read number of obstacles from a config file.
-  int numberOfObstacles = 10;
-
   int x, y;
   while (true)
   {
     /// Return if we meet the size requiremens.
-    if (numberOfObstacles == _obstacles.size())
+    if (_numberOfObstacles == _obstacles.size())
     {
       return;
     }
@@ -146,7 +151,7 @@ bool Game::ObstacleCell(int x, int y)
 {
   for (const Obstacle &obstacle : _obstacles)
   {
-    if (x == obstacle.getYCoordinate() && y == obstacle.getYCoordinate())
+    if (x == obstacle.getXCoordinate() && y == obstacle.getYCoordinate())
     {
       return true;
     }
@@ -168,14 +173,11 @@ bool Game::BoosterCell(int x, int y)
 
 void Game::PlaceBoosters()
 {
-  // TODO: Read number of boosters from a config file.
-  int numberOfBoosters = 10;
-
   int x, y;
   while (true)
   {
     /// Return if we meet the size requiremens.
-    if (numberOfBoosters == _boosters.size())
+    if (_numberOfBoosters == _boosters.size())
     {
       return;
     }

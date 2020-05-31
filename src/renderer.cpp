@@ -40,11 +40,9 @@ Renderer::Renderer(const std::size_t screen_width,
   }
 
   // Creating Obstacle Texture
-  // TODO: Create an image provider
   obstacleSurface = SDL_LoadBMP("../assets/unlit-bomb.bmp");
   obstacleTexture = SDL_CreateTextureFromSurface(sdl_renderer, obstacleSurface);
 
-  // Creating Booster Texture
   boosterSurface = SDL_LoadBMP("../assets/rocket.bmp");
   boosterTexture = SDL_CreateTextureFromSurface(sdl_renderer, boosterSurface);
 }
@@ -120,8 +118,8 @@ void Renderer::placeObstacles(const std::vector<Obstacle> &obstacles) const
     SDL_Rect obstacleRect;
     obstacleRect.w = screen_width / grid_width;
     obstacleRect.h = screen_height / grid_height;
-    obstacleRect.x = obstacle.xCoordinate * obstacleRect.w;
-    obstacleRect.y = obstacle.yCoordinate * obstacleRect.h;
+    obstacleRect.x = obstacle.getXCoordinate() * obstacleRect.w;
+    obstacleRect.y = obstacle.getYCoordinate() * obstacleRect.h;
 
     // Render the obstacles
     SDL_RenderCopy(sdl_renderer, obstacleTexture, NULL, &obstacleRect);

@@ -40,6 +40,8 @@ private:
   void deleteBoosterCellAt(const int &x, const int &y);
 
   int score{0};
+  int _numberOfBoosters;
+  int _numberOfObstacles;
 
   void PlaceFood();
   void Update();
