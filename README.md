@@ -8,7 +8,7 @@ This is the final Capstone project of the [Udacity C++ Nanodegree Program](https
 1. There are boosters marked by 🚀 which will speed up the snake's speed.
 2. Beware of obstacles.
 3. Number of obstacles and boosters can be configured from the config.txt file.
-4. I had a great time building it! Hope ou have a great time playing it 👍🏼
+4. I had a great time building it! Hope you have a great time playing it 👍🏼
 
 <img src="my_game.png"/>
 
