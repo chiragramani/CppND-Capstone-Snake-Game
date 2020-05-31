@@ -4,6 +4,8 @@
 #include "SDL.h"
 #include "Booster.h"
 #include "FileUtils.h"
+#include "Obstacles.h"
+#include "Coordinate.h"
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -15,6 +17,9 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
   auto config = FileUtils::getConfigFromFile();
   _numberOfBoosters = config.getNumberOfBoosters();
   _numberOfObstacles = config.getNumberOfObstacles();
+  
+  /// Initialising shared pointers.
+  _obstacles = std::shared_ptr<Obstacles>(new Obstacles());
 
   PlaceFood();
   /// Placing the obstacles;
@@ -95,7 +100,8 @@ void Game::Update()
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
 
-  if (ObstacleCell(new_x, new_y))
+  /// Is the new cell an obstacle.
+  if (_obstacles->ObstacleCell(Coordinate(new_x, new_y)))
   {
     snake.alive = false;
     return;
@@ -128,7 +134,7 @@ void Game::PlaceObstacles()
   while (true)
   {
     /// Return if we meet the size requiremens.
-    if (_numberOfObstacles == _obstacles.size())
+    if (_numberOfObstacles == _obstacles->count())
     {
       return;
     }
@@ -142,21 +148,9 @@ void Game::PlaceObstacles()
     auto foodExistsAtThisCell = food.x == x && food.y == y;
     if (!snake.SnakeCell(x, y) && !foodExistsAtThisCell)
     {
-      _obstacles.emplace_back(Obstacle(x, y));
+      _obstacles->addCoordinate(Coordinate(x, y));
     }
   }
-}
-
-bool Game::ObstacleCell(int x, int y)
-{
-  for (const Obstacle &obstacle : _obstacles)
-  {
-    if (x == obstacle.getXCoordinate() && y == obstacle.getYCoordinate())
-    {
-      return true;
-    }
-  }
-  return false;
 }
 
 bool Game::BoosterCell(int x, int y)

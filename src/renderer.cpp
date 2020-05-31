@@ -55,7 +55,7 @@ Renderer::~Renderer()
 
 void Renderer::Render(Snake const snake,
                       SDL_Point const &food,
-                      const std::vector<Obstacle> &obstacles,
+                      const std::shared_ptr<Obstacles> obstacles,
                       const std::vector<Booster> &boosters)
 {
   SDL_Rect block;
@@ -110,16 +110,16 @@ void Renderer::UpdateWindowTitle(int score, int fps)
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
 
-void Renderer::placeObstacles(const std::vector<Obstacle> &obstacles) const
+void Renderer::placeObstacles(const std::shared_ptr<Obstacles> obstacles) const
 {
-  for (const Obstacle &obstacle : obstacles)
+  for (const Coordinate &coordinate : obstacles->getCoordinates())
   {
     // Rect which will be hosting the obstacle.
     SDL_Rect obstacleRect;
     obstacleRect.w = screen_width / grid_width;
     obstacleRect.h = screen_height / grid_height;
-    obstacleRect.x = obstacle.getXCoordinate() * obstacleRect.w;
-    obstacleRect.y = obstacle.getYCoordinate() * obstacleRect.h;
+    obstacleRect.x = coordinate.getXCoordinate() * obstacleRect.w;
+    obstacleRect.y = coordinate.getYCoordinate() * obstacleRect.h;
 
     // Render the obstacles
     SDL_RenderCopy(sdl_renderer, obstacleTexture, NULL, &obstacleRect);

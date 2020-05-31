@@ -9,6 +9,8 @@
 #include "snake.h"
 #include "Obstacle.h"
 #include "Booster.h"
+#include <memory>
+#include "Obstacles.h"
 
 class Game
 {
@@ -29,10 +31,9 @@ private:
   std::uniform_int_distribution<int> random_h;
 
   /* If snake gets in touch with these obstacles, then the snake loses its life. */
-  std::vector<Obstacle> _obstacles;
+  std::shared_ptr<Obstacles> _obstacles;
   void PlaceObstacles();
-  bool ObstacleCell(int x, int y);
-
+  
 /* If snake gets in touch with these boosters, then snake's speeds increases. */
   std::vector<Booster> _boosters;
   void PlaceBoosters();
