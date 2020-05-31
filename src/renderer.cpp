@@ -3,6 +3,7 @@
 #include <string>
 #include "SDL.h"
 #include "Obstacle.h"
+#include "Booster.h"
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
@@ -38,10 +39,14 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
 
-  // Creating Obstacle Textre
+  // Creating Obstacle Texture
   // TODO: Create an image provider
   obstacleSurface = SDL_LoadBMP("../assets/unlit-bomb.bmp");
   obstacleTexture = SDL_CreateTextureFromSurface(sdl_renderer, obstacleSurface);
+
+  // Creating Booster Texture
+  boosterSurface = SDL_LoadBMP("../assets/rocket.bmp");
+  boosterTexture = SDL_CreateTextureFromSurface(sdl_renderer, boosterSurface);
 }
 
 Renderer::~Renderer()
@@ -50,7 +55,10 @@ Renderer::~Renderer()
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food, const std::vector<Obstacle> &obstacles)
+void Renderer::Render(Snake const snake,
+                      SDL_Point const &food,
+                      const std::vector<Obstacle> &obstacles,
+                      const std::vector<Booster> &boosters)
 {
   SDL_Rect block;
   block.w = screen_width / grid_width;
@@ -88,7 +96,11 @@ void Renderer::Render(Snake const snake, SDL_Point const &food, const std::vecto
   }
   SDL_RenderFillRect(sdl_renderer, &block);
 
+  // Place obstacles
   placeObstacles(obstacles);
+  
+  // Place boosters
+  placeBoosters(boosters);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
@@ -104,7 +116,7 @@ void Renderer::placeObstacles(const std::vector<Obstacle> &obstacles) const
 {
   for (const Obstacle &obstacle : obstacles)
   {
-    // Rect which will be hosting theobstacle
+    // Rect which will be hosting the obstacle.
     SDL_Rect obstacleRect;
     obstacleRect.w = screen_width / grid_width;
     obstacleRect.h = screen_height / grid_height;
@@ -113,5 +125,21 @@ void Renderer::placeObstacles(const std::vector<Obstacle> &obstacles) const
 
     // Render the obstacles
     SDL_RenderCopy(sdl_renderer, obstacleTexture, NULL, &obstacleRect);
+  }
+}
+
+void Renderer::placeBoosters(const std::vector<Booster> &boosters) const
+{
+  for (const Booster &booster : boosters)
+  {
+    // Rect which will be hosting the booster
+    SDL_Rect obstacleRect;
+    obstacleRect.w = screen_width / grid_width;
+    obstacleRect.h = screen_height / grid_height;
+    obstacleRect.x = booster.getXCoordinate() * obstacleRect.w;
+    obstacleRect.y = booster.getYCoordinate() * obstacleRect.h;
+
+    // Render the obstacles
+    SDL_RenderCopy(sdl_renderer, boosterTexture, NULL, &obstacleRect);
   }
 }
