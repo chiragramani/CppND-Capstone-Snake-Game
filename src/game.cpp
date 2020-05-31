@@ -76,6 +76,10 @@ void Game::Update() {
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
 
+  if (ObstacleCell(new_x, new_y)) {
+    snake.alive = false;
+  }
+
   // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
     score++;
@@ -111,4 +115,13 @@ void Game::PlaceObstacles() {
       _obstacles.emplace_back(Obstacle(x, y));
     }
   }
+}
+
+bool Game::ObstacleCell(int x, int y) {
+  for(const Obstacle &obstacle: _obstacles) {
+      if(x == obstacle.xCoordinate && y == obstacle.yCoordinate) {
+        return true;
+      } 
+  }
+  return false;
 }

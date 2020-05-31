@@ -29,6 +29,7 @@ class Game {
   /* If snake gets in touch with these obstacles, then the snake loses its life. */
   std::vector<Obstacle> _obstacles;
   void PlaceObstacles();
+  bool ObstacleCell(int x, int y);
 
   int score{0};
 
