@@ -146,7 +146,7 @@ bool Game::ObstacleCell(int x, int y)
 {
   for (const Obstacle &obstacle : _obstacles)
   {
-    if (x == obstacle.xCoordinate && y == obstacle.yCoordinate)
+    if (x == obstacle.getYCoordinate() && y == obstacle.getYCoordinate())
     {
       return true;
     }
