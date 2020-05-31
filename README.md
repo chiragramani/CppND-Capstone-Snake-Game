@@ -10,7 +10,7 @@ This is the final Capstone project of the [Udacity C++ Nanodegree Program](https
 3. Number of obstacles and boosters can be configured from the config.txt file.
 4. I had a great time building it! Hope ou have a great time playing it 👍🏼
 
-<img src="smy_game.png"/>
+<img src="my_game.png"/>
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
